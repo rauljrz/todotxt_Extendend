@@ -1,0 +1,85 @@
+# Todo.txt Extended Management Script
+
+This script allows you to manage your tasks using the extended todo.txt format. Below are the available commands and how to use them.
+
+## Basic Commands
+
+1. Add a task: `--add` or `-a`
+   Example: `python todo.py --add "Complete report @office +projectX #work (A) tomorrow rec:1w"`
+   
+   This command adds a new task with context (@), project (+), tag (#), priority (A-Z), due date, and recurrence.
+
+2. Start a task: `--start` or `-s`
+   Example: `python todo.py --start 5`
+   
+   Marks task with ID 5 as in progress.
+
+3. Pause a task: `--pause` or `-P`
+   Example: `python todo.py --pause 5`
+   
+   Pauses task with ID 5 if it's in progress.
+
+4. Complete a task: `--complete` or `-C`
+   Example: `python todo.py --complete 5`
+   
+   Marks task with ID 5 as completed and moves it to done.txt.
+
+5. List tasks: `--list` or `-l`
+   Example: `python todo.py --list`
+   
+   Displays all tasks in todo.txt.
+
+6. Archive completed tasks: `--archive` or `-A`
+   Example: `python todo.py --archive`
+   
+   Moves all completed tasks from todo.txt to done.txt.
+
+7. Sort tasks: `--order` or `-o`
+   Example: `python todo.py --order priority`
+   
+   Sorts tasks by priority. Options: priority (p), project (y), context (c), tag (t), status (s).
+
+8. Delete a task: `--delete` or `-D`
+   Example: `python todo.py --delete 10`
+   
+   Deletes task with ID 10.
+
+## Advanced Options
+
+1. Filter tasks: `--filter` or `-f`
+   Example: `python todo.py --list --filter "p:A"`
+   
+   Lists all tasks with priority A.
+   
+   Other examples:
+   - `python todo.py -l -fy:projectX` (filter by project)
+   - `python todo.py -l -fc:@office` (filter by context)
+   - `python todo.py -l -ft:#work` (filter by tag)
+   - `python todo.py -l -fs:now` (filter by status: debt, done, paused, now)
+
+2. Reverse order: `--reverse` or `-R`
+   Example: `python todo.py --list --order priority --reverse`
+   
+   Lists tasks sorted by priority in reverse order.
+
+## Task Format
+
+- Priority: (A) at the beginning of the task
+- Creation date: YYYY-MM-DD after the priority
+- Context: @context
+- Project: +project
+- Tag: #tag
+- Due date: due:YYYY-MM-DD
+- Recurrence: rec:1d (daily), rec:1w (weekly), rec:1m (monthly), rec:1y (yearly)
+
+Example of a complete task:
+`(A) 2023-04-15 Review budget @office +finances #quarterly due:2023-04-30 rec:3m`
+
+## Important Notes
+
+- Tasks in progress are marked with [=]
+- Paused tasks are marked with [?]
+- Completed tasks start with x
+- Comments in todo.txt start with # or // and are not processed by the script
+
+For quick help, use `python todo.py --help`

@@ -1,0 +1,85 @@
+# Todo.txt Extended Management Script
+
+Este script te permite gestionar tus tareas utilizando el formato todo.txt extendido. A continuación, se detallan los comandos disponibles y cómo utilizarlos.
+
+## Comandos Básicos
+
+1. Agregar una tarea: `--add` o `-a`
+   Ejemplo: `python todo.py --add "Completar informe @oficina +proyectoX #trabajo (A) tomorrow rec:1w"`
+   
+   Este comando agrega una nueva tarea con contexto (@), proyecto (+), etiqueta (#), prioridad (A-Z), fecha de vencimiento y recurrencia.
+
+2. Iniciar una tarea: `--start` o `-s`
+   Ejemplo: `python todo.py --start 5`
+   
+   Marca la tarea con ID 5 como en progreso.
+
+3. Pausar una tarea: `--pause` o `-P`
+   Ejemplo: `python todo.py --pause 5`
+   
+   Pausa la tarea con ID 5 si está en progreso.
+
+4. Completar una tarea: `--complete` o `-C`
+   Ejemplo: `python todo.py --complete 5`
+   
+   Marca la tarea con ID 5 como completada y la mueve a done.txt.
+
+5. Listar tareas: `--list` o `-l`
+   Ejemplo: `python todo.py --list`
+   
+   Muestra todas las tareas en todo.txt.
+
+6. Archivar tareas completadas: `--archive` o `-A`
+   Ejemplo: `python todo.py --archive`
+   
+   Mueve todas las tareas completadas de todo.txt a done.txt.
+
+7. Ordenar tareas: `--order` o `-o`
+   Ejemplo: `python todo.py --order priority`
+   
+   Ordena las tareas por prioridad. Opciones: priority (p), project (y), context (c), tag (t), status (s).
+
+8. Eliminar una tarea: `--delete` o `-D`
+   Ejemplo: `python todo.py --delete 10`
+   
+   Elimina la tarea con ID 10.
+
+## Opciones Avanzadas
+
+1. Filtrar tareas: `--filter` o `-f`
+   Ejemplo: `python todo.py --list --filter "p:A"`
+   
+   Lista todas las tareas con prioridad A.
+   
+   Otros ejemplos:
+   - `python todo.py -l -fy:proyectoX` (filtra por proyecto)
+   - `python todo.py -l -fc:@oficina` (filtra por contexto)
+   - `python todo.py -l -ft:#trabajo` (filtra por etiqueta)
+   - `python todo.py -l -fs:now` (filtra por estado: debt, done, paused, now)
+
+2. Invertir orden: `--reverse` o `-R`
+   Ejemplo: `python todo.py --list --order priority --reverse`
+   
+   Lista las tareas ordenadas por prioridad en orden inverso.
+
+## Formato de Tareas
+
+- Prioridad: (A) al inicio de la tarea
+- Fecha de creación: YYYY-MM-DD después de la prioridad
+- Contexto: @contexto
+- Proyecto: +proyecto
+- Etiqueta: #etiqueta
+- Fecha de vencimiento: due:YYYY-MM-DD
+- Recurrencia: rec:1d (diaria), rec:1w (semanal), rec:1m (mensual), rec:1y (anual)
+
+Ejemplo de tarea completa:
+`(A) 2023-04-15 Revisar presupuesto @oficina +finanzas #trimestral due:2023-04-30 rec:3m`
+
+## Notas Importantes
+
+- Las tareas en progreso se marcan con [=]
+- Las tareas pausadas se marcan con [?]
+- Las tareas completadas comienzan con x
+- Los comentarios en todo.txt comienzan con # o // y no son procesados por el script
+
+Para obtener ayuda rápida, usa `python todo.py --help`
