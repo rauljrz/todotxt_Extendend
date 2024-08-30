@@ -14,6 +14,10 @@ todotxtExtended is an enhanced Python script for managing tasks using an extende
   - [Configuration](#configuration)
   - [Usage](#usage)
     - [Basic Commands](#basic-commands)
+  - [Creating Aliases](#creating-aliases)
+    - [For Linux/macOS](#for-linuxmacos)
+    - [For Windows](#for-windows)
+  - [Alternative Usage Methods](#alternative-usage-methods)
   - [Extended Format](#extended-format)
   - [Contributing](#contributing)
   - [Acknowledgments](#acknowledgments)
@@ -95,6 +99,83 @@ python todo.py --manual
 - Complete a task: `python todo.py --complete <task_id>`
 - Start a task: `python todo.py --start <task_id>`
 - Pause a task: `python todo.py --pause <task_id>`
+
+## Creating Aliases
+
+To make using todotxtExtended more convenient, you can create aliases for common commands.
+
+### For Linux/macOS
+
+1. Open your shell configuration file (e.g., `~/.bashrc`, `~/.zshrc`, etc.) in a text editor.
+2. Add the following lines:
+
+```bash
+alias todo='python /path/to/todo.py'
+alias t='python /path/to/todo.py'
+alias ta='python /path/to/todo.py --add'
+alias tl='python /path/to/todo.py --list'
+alias tc='python /path/to/todo.py --complete'
+alias ts='python /path/to/todo.py --start'
+alias tp='python /path/to/todo.py --pause'
+```
+
+3. Save the file and reload your shell configuration:
+
+```bash
+source ~/.bashrc  # or the appropriate file for your shell
+```
+
+### For Windows
+
+1. Open a command prompt as an administrator.
+2. Use the `doskey` command to create aliases:
+
+```
+doskey todo=python C:\path\to\todo.py $*
+doskey t=python C:\path\to\todo.py $*
+doskey ta=python C:\path\to\todo.py --add $*
+doskey tl=python C:\path\to\todo.py --list $*
+doskey tc=python C:\path\to\todo.py --complete $*
+doskey ts=python C:\path\to\todo.py --start $*
+doskey tp=python C:\path\to\todo.py --pause $*
+```
+
+To make these aliases permanent, you can create a batch file with these commands and add it to your Windows startup folder or run it as part of your command prompt initialization.
+
+## Alternative Usage Methods
+
+1. **Make the script executable (Linux/macOS):**
+   
+   Add a shebang line at the beginning of the script:
+   ```python
+   #!/usr/bin/env python3
+   ```
+   Then make it executable:
+   ```bash
+   chmod +x /path/to/todo.py
+   ```
+   Now you can run it directly:
+   ```bash
+   ./todo.py [options]
+   ```
+
+2. **Create a batch file (Windows):**
+   
+   Create a file named `todo.bat` in a directory in your PATH with the following content:
+   ```batch
+   @echo off
+   python C:\path\to\todo.py %*
+   ```
+   Now you can use `todo` from anywhere in the command prompt.
+
+3. **Use `python -m`:**
+   
+   If you add the directory containing `todo.py` to your PYTHONPATH, you can run it as a module:
+   ```bash
+   python -m todo [options]
+   ```
+
+These methods allow for more flexible and convenient usage of todotxtExtended across different operating systems and environments.
 
 ## Extended Format
 
