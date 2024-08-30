@@ -6,14 +6,18 @@ todotxtExtended is an enhanced Python script for managing tasks using an extende
 
 ## Table of Contents
 
-- [Background](#background)
-- [Features](#features)
-- [Installation](#installation)
-- [Usage](#usage)
-- [Extended Format](#extended-format)
-- [Contributing](#contributing)
-- [Acknowledgments](#acknowledgments)
-- [License](#license)
+- [todotxtExtended](#todotxtextended)
+  - [Table of Contents](#table-of-contents)
+  - [Background](#background)
+  - [Features](#features)
+  - [Installation](#installation)
+  - [Configuration](#configuration)
+  - [Usage](#usage)
+    - [Basic Commands](#basic-commands)
+  - [Extended Format](#extended-format)
+  - [Contributing](#contributing)
+  - [Acknowledgments](#acknowledgments)
+  - [License](#license)
 
 ## Background
 
@@ -41,6 +45,28 @@ todotxtExtended is inspired by the original [todo.txt](https://github.com/todotx
    cd todotxtExtended
    ```
 3. Ensure you have Python 3.6+ installed.
+
+## Configuration
+
+todotxtExtended reads the `todo.txt` and `done.txt` files from a directory configured in a `.todo` file located in the user's home directory. If this file doesn't exist, the script will create it along with a default "Life" folder in the home directory.
+
+The default configuration in the `.todo` file is as follows:
+
+```
+TODO_FILE=/path/to/home/Life/todo.txt
+DONE_FILE=/path/to/home/Life/done.txt
+HELP_FILE=/path/to/home/Life/todohelp.txt
+```
+
+You can customize these paths by editing the `.todo` file. For example:
+
+```
+TODO_FILE=/custom/path/todo.txt
+DONE_FILE=/custom/path/done.txt
+HELP_FILE=/custom/path/todohelp.txt
+```
+
+If the specified directories don't exist, the script will create them automatically.
 
 ## Usage
 
