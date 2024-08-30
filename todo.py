@@ -14,13 +14,27 @@ def load_config():
     """Carga la configuración desde el archivo .todo en el directorio home del usuario."""
     home = Path.home()
     config_file = home / '.todo'
+    life_folder = home / 'Life'
     config = {
-        'TODO_FILE': 'todo.txt',
-        'DONE_FILE': 'done.txt',
-        'HELP_FILE': 'todohelp.txt'
+        'TODO_FILE': str(life_folder / 'todo.txt'),
+        'DONE_FILE': str(life_folder / 'done.txt'),
+        'HELP_FILE': str(life_folder / 'todohelp.txt')
     }
 
-    if config_file.exists():
+    if not config_file.exists():
+        # Crear la carpeta Life si no existe
+        if not life_folder.exists():
+            life_folder.mkdir(mode=0o755, exist_ok=True)
+            if os.name == 'posix':  # Solo para sistemas tipo Unix (Linux, macOS)
+                os.chmod(life_folder, 0o755)
+
+        # Crear el archivo .todo con la configuración por defecto
+        with open(config_file, 'w', encoding='utf-8') as file:
+            for key, value in config.items():
+                file.write(f"{key}={value}\n")
+
+    else:
+        # Leer la configuración existente
         with open(config_file, 'r', encoding='utf-8') as file:
             for line in file:
                 key, value = line.strip().split('=')
