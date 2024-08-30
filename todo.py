@@ -5,10 +5,34 @@ import datetime
 import re
 import os
 from typing import List
+from pathlib import Path
 
 TODO_FILE = "todo.txt"
 DONE_FILE = "done.txt"
 HELP_FILE = "todohelp.txt"
+def load_config():
+    """Carga la configuración desde el archivo .todo en el directorio home del usuario."""
+    home = Path.home()
+    config_file = home / '.todo'
+    config = {
+        'TODO_FILE': 'todo.txt',
+        'DONE_FILE': 'done.txt',
+        'HELP_FILE': 'todohelp.txt'
+    }
+
+    if config_file.exists():
+        with open(config_file, 'r', encoding='utf-8') as file:
+            for line in file:
+                key, value = line.strip().split('=')
+                config[key.strip()] = value.strip()
+
+    return config
+
+# Reemplaza las variables globales con la configuración cargada
+config = load_config()
+TODO_FILE = config['TODO_FILE']
+DONE_FILE = config['DONE_FILE']
+HELP_FILE = config['HELP_FILE']
 
 def parse_arguments():
     """Analiza y devuelve los argumentos de línea de comandos."""
@@ -295,6 +319,12 @@ def show_help(extended: bool = False):
 
 def main():
     """Función principal del script."""
+    global TODO_FILE, DONE_FILE, HELP_FILE
+    config = load_config()
+    TODO_FILE = config['TODO_FILE']
+    DONE_FILE = config['DONE_FILE']
+    HELP_FILE = config['HELP_FILE']
+    
     args = parse_arguments()
     if args.help:
         show_help()
