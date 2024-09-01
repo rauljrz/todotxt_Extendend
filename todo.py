@@ -325,21 +325,20 @@ def delete_task(task_id: int):
     if 1 <= task_id <= len(tasks):
         task = tasks[task_id - 1]
         if not task.startswith(("#", "//")):
-            print(f"Está a punto de eliminar la siguiente tarea:")
+            print(f"You are about to delete the following task:")
             print(f"{task_id}. {task}")
-            confirmacion = input("¿Está seguro de que desea eliminar esta tarea? (s/n): ").lower()
+            confirmacion = input("Are you sure you want to delete this task? (y/m): ").lower()
             
-            if confirmacion == 's':
+            if confirmacion == 'y':
                 del tasks[task_id - 1]
                 write_tasks(TODO_FILE, tasks)
-                print(f"Tarea {task_id} eliminada.")
+                print(f"Task #{task_id} deleted.")
             else:
-                print("Operación de eliminación cancelada.")
+                print("Task operation cancelled.")
         else:
-            print("No se puede eliminar una tarea de comentario.")
+            print("Cannot delete a comment line.")
     else:
-        print(f"ID de tarea inválido: {task_id}")
-
+        print(f"Invalid task ID: {task_id}")
 def show_help(extended: bool = False):
     """Muestra la ayuda para el script."""
     if extended and os.path.exists(HELP_FILE):
