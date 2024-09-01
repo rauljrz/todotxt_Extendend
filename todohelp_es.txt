@@ -44,6 +44,22 @@ Este script te permite gestionar tus tareas utilizando el formato todo.txt exten
    
    Elimina la tarea con ID 10.
 
+9. Copiar una tarea: `--copy` or `-cp`
+   Ejemplo: `python todo.py --copy 10`
+
+   Copia la tarea con ID 10.
+
+10. Cambiar prioridad de una tarea: `--change-priority` or `-ch`
+    Ejemplo: `python todo.py --change-priority 10 A`
+    
+    Cambia la prioridad de la tarea con ID 10 a A.
+
+11. Ordenar archivo: `--sort-file` or `-sf`
+
+    Ejemplo: `python todo.py --sort-file priority`
+    
+    Ordena el archivo por prioridad.
+
 ## Opciones Avanzadas
 
 1. Filtrar tareas: `--filter` o `-f`

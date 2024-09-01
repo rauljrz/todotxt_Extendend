@@ -44,6 +44,21 @@ This script allows you to manage your tasks using the extended todo.txt format. 
    
    Deletes task with ID 10.
 
+9. Copy a task: `--copy` or `-cp`
+   Example: `python todo.py --copy 10`
+   
+   Copies task with ID 10.
+
+10. Change task priority: `--change-priority` or `-ch`
+    Example: `python todo.py --change-priority 10 A`
+    
+    Changes task with ID 10 to priority A.
+
+11. Sort file: `--sort-file` or `-sf`
+    Example: `python todo.py --sort-file priority`
+    
+    Sorts the file by priority.
+
 ## Advanced Options
 
 1. Filter tasks: `--filter` or `-f`
