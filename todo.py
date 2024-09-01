@@ -4,7 +4,7 @@ import argparse
 import datetime
 import re
 import os
-from typing import List
+from typing import List, Callable
 from pathlib import Path
 
 TODO_FILE = "todo.txt"
@@ -65,7 +65,78 @@ def parse_arguments():
     parser.add_argument("--reverse", "-R", action="store_true", help="Reverse sort order")
     parser.add_argument("--help", "-h", action="store_true", help="Show help")
     parser.add_argument("--manual", "-m", action="store_true", help="Show extended help")
+    parser.add_argument("--copy", "-cp", type=int, help="Duplicar una tarea")
+    parser.add_argument("--change-priority", "-ch", nargs=2, metavar=('ID', 'PRIORITY'),
+                        help="Cambiar la prioridad de una tarea")
+    parser.add_argument("--sort-file", "-sf", help="Ordenar físicamente el archivo todo.txt")
     return parser.parse_args()
+
+def copy_task(task_id: int):
+    """Duplica una tarea existente."""
+    tasks = read_tasks(TODO_FILE)
+    if 1 <= task_id <= len(tasks):
+        task = tasks[task_id - 1]
+        if not task.startswith(("#", "//")):
+            today = datetime.date.today().strftime("%Y-%m-%d")
+            new_task = re.sub(r'^\d{4}-\d{2}-\d{2}', today, task)
+            new_task = re.sub(r'\[=\]|\[?\]|start:\d{4}|end:\d{4}|spent:\d{4}', '', new_task)
+            new_task = re.sub(r'\s+', ' ', new_task).strip()
+            tasks.append(new_task)
+            write_tasks(TODO_FILE, tasks)
+            print(f"Task {task_id} duplicated with ID: {len(tasks)}")
+        else:
+            print("Cannot duplicate a comment task.")
+    else:
+        print(f"Invalid task ID: {task_id}")
+
+def change_priority(task_id: int, new_priority: str):
+    """Cambia la prioridad de una tarea existente."""
+    tasks = read_tasks(TODO_FILE)
+    if 1 <= task_id <= len(tasks):
+        task = tasks[task_id - 1]
+        if not task.startswith(("#", "//")):
+            if re.match(r'^[A-Z]$', new_priority):
+                tasks[task_id - 1] = re.sub(r'^\([A-Z]\) ?', '', task)
+                tasks[task_id - 1] = f"({new_priority}) {tasks[task_id - 1]}"
+                write_tasks(TODO_FILE, tasks)
+                print(f"Task {task_id} priority changed to {new_priority}")
+            else:
+                print("Priority must be an uppercase letter from A to Z.")
+        else:
+            print("Cannot change the priority of a comment task.")
+    else:
+        print(f"Invalid task ID: {task_id}")
+
+def sort_file(criterion: str):
+    """Ordena físicamente el archivo todo.txt según el criterio especificado."""
+    tasks = read_tasks(TODO_FILE)
+    comments = [t for t in tasks if t.startswith(("#", "//"))]
+    tasks = [t for t in tasks if not t.startswith(("#", "//"))]
+
+    sort_functions = {
+        'creation_date': lambda t: re.search(r'(\d{4}-\d{2}-\d{2})', t).group(1) if re.search(r'(\d{4}-\d{2}-\d{2})', t) else '',
+        'cd': lambda t: re.search(r'(\d{4}-\d{2}-\d{2})', t).group(1) if re.search(r'(\d{4}-\d{2}-\d{2})', t) else '',
+        'due_date': lambda t: re.search(r'due:(\d{4}-\d{2}-\d{2})', t).group(1) if re.search(r'due:(\d{4}-\d{2}-\d{2})', t) else '9999-99-99',
+        'dd': lambda t: re.search(r'due:(\d{4}-\d{2}-\d{2})', t).group(1) if re.search(r'due:(\d{4}-\d{2}-\d{2})', t) else '9999-99-99',
+        'priority': lambda t: re.search(r'\(([A-Z])\)', t).group(1) if re.search(r'\(([A-Z])\)', t) else 'Z',
+        'p': lambda t: re.search(r'\(([A-Z])\)', t).group(1) if re.search(r'\(([A-Z])\)', t) else 'Z',
+        'project': lambda t: re.search(r'\+(\w+)', t).group(1) if re.search(r'\+(\w+)', t) else '',
+        'y': lambda t: re.search(r'\+(\w+)', t).group(1) if re.search(r'\+(\w+)', t) else '',
+        'context': lambda t: re.search(r'@(\w+)', t).group(1) if re.search(r'@(\w+)', t) else '',
+        'c': lambda t: re.search(r'@(\w+)', t).group(1) if re.search(r'@(\w+)', t) else '',
+        'tag': lambda t: re.search(r'#(\w+)', t).group(1) if re.search(r'#(\w+)', t) else '',
+        't': lambda t: re.search(r'#(\w+)', t).group(1) if re.search(r'#(\w+)', t) else '',
+        'description': lambda t: ' '.join(t.split()[2:]) if len(t.split()) > 2 else '',
+        'd': lambda t: ' '.join(t.split()[2:]) if len(t.split()) > 2 else ''
+    }
+
+    if criterion in sort_functions:
+        tasks.sort(key=sort_functions[criterion])
+        sorted_tasks = comments + tasks
+        write_tasks(TODO_FILE, sorted_tasks)
+        print(f"File sorted by {criterion}")
+    else:
+        print(f"Invalid sorting criterion: {criterion}")
 
 def read_tasks(filename: str) -> List[str]:
     """Lee y devuelve las tareas desde un archivo."""
@@ -190,7 +261,6 @@ def pause_task(task_id: int):
             print("This task is not currently in progress or is a comment.")
     else:
         print(f"Invalid task ID: {task_id}")
-
 def complete_task(task_id: int):
     """Marca una tarea como completada."""
     tasks = read_tasks(TODO_FILE)
@@ -354,9 +424,11 @@ def show_help(extended: bool = False):
         print("  --list, -l        List tasks")
         print("  --archive, -A     Archive completed tasks")
         print("  --order, -o FIELD Order tasks")
-        print("  --delete, -D ID   Delete a task")
         print("  --filter, -f TEXT Filter tasks")
         print("  --reverse, -R     Reverse sort order")
+        print("  --delete, -D ID   Delete a task")
+        print("  --copy, -cp ID    Copy a task")
+        print("  --change-priority, -ch ID PRIORITY Change task priority")
         print("  --help, -h        Show this help")
         print("  --manual, -m      Show extended help")
 
@@ -367,7 +439,7 @@ def main():
     TODO_FILE = config['TODO_FILE']
     DONE_FILE = config['DONE_FILE']
     HELP_FILE = config['HELP_FILE']
-    
+
     args = parse_arguments()
     if args.help:
         show_help()
@@ -390,6 +462,12 @@ def main():
         list_tasks(order_by=args.order, reverse=args.reverse)
     elif args.delete:
         delete_task(args.delete)
+    elif args.copy:
+        copy_task(args.copy)
+    elif args.change_priority:
+        change_priority(int(args.change_priority[0]), args.change_priority[1])
+    elif args.sort_file:
+        sort_file(args.sort_file)
     else:
         print("No valid command provided. Use --help for usage information.")
 
