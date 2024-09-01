@@ -320,17 +320,25 @@ def archive_tasks():
     write_tasks(DONE_FILE, done_tasks)
 
 def delete_task(task_id: int):
-    """Elimina una tarea del archivo todo.txt."""
+    """Elimina una tarea del archivo todo.txt después de pedir confirmación."""
     tasks = read_tasks(TODO_FILE)
     if 1 <= task_id <= len(tasks):
-        if not tasks[task_id - 1].startswith(("#", "//")):
-            del tasks[task_id - 1]
-            write_tasks(TODO_FILE, tasks)
-            print(f"Task {task_id} deleted.")
+        task = tasks[task_id - 1]
+        if not task.startswith(("#", "//")):
+            print(f"Está a punto de eliminar la siguiente tarea:")
+            print(f"{task_id}. {task}")
+            confirmacion = input("¿Está seguro de que desea eliminar esta tarea? (s/n): ").lower()
+            
+            if confirmacion == 's':
+                del tasks[task_id - 1]
+                write_tasks(TODO_FILE, tasks)
+                print(f"Tarea {task_id} eliminada.")
+            else:
+                print("Operación de eliminación cancelada.")
         else:
-            print("Cannot delete a comment task.")
+            print("No se puede eliminar una tarea de comentario.")
     else:
-        print(f"Invalid task ID: {task_id}")
+        print(f"ID de tarea inválido: {task_id}")
 
 def show_help(extended: bool = False):
     """Muestra la ayuda para el script."""
