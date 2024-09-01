@@ -198,14 +198,33 @@ def complete_task(task_id: int):
     if 1 <= task_id <= len(tasks):
         task = tasks[task_id - 1]
         if not task.startswith(("#", "//")):
-            tasks.pop(task_id - 1)
             today = datetime.date.today().strftime("%Y-%m-%d")
+            now = datetime.datetime.now()
+            end_time = now.strftime("%H%M")
+            
+            # Manejar tareas en ejecución
+            if "[=]" in task:
+                start_time_match = re.search(r'start:(\d{4})', task)
+                if start_time_match:
+                    start_time = datetime.datetime.strptime(start_time_match.group(1), "%H%M")
+                    time_spent = now - start_time.replace(year=now.year, month=now.month, day=now.day)
+                    spent_str = f"{time_spent.seconds//3600:02d}{(time_spent.seconds % 3600)//60:02d}"
+                    task = task.replace("[=]", "").replace(
+                        f"start:{start_time_match.group(1)}",
+                        f"start:{start_time_match.group(1)} end:{end_time} spent:{spent_str}"
+                    )
+                else:
+                    task = task.replace("[=]", "")
+            
             priority_match = re.search(r'\(([A-Z])\)', task)
             priority = f"({priority_match.group(1)}) " if priority_match else ""
             creation_date_match = re.search(r'(\d{4}-\d{2}-\d{2})', task)
             creation_date = creation_date_match.group(1) if creation_date_match else ""
+            
             completed_task = f"x {priority}{today} {creation_date} {task.split(' ', 2)[-1]}"
             done_tasks.append(completed_task)
+            tasks.pop(task_id - 1)
+            
             write_tasks(TODO_FILE, tasks)
             write_tasks(DONE_FILE, done_tasks)
             print(f"Task {task_id} completed.")
