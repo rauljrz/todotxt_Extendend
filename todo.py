@@ -218,14 +218,17 @@ def list_tasks(filter_str: str = None, order_by: str = None, reverse: bool = Fal
     """Lista las tareas según los criterios de filtrado y ordenamiento."""
     tasks = read_tasks(TODO_FILE)
 
+    # Creo un diccionario que mapee cada tarea a su número de línea
+    task_line_numbers = {task: i + 1 for i, task in enumerate(tasks)}
     if filter_str:
         tasks = filter_tasks(tasks, filter_str)
 
     if order_by:
         tasks = sort_tasks(tasks, order_by, reverse)
 
-    for i, task in enumerate(tasks, 1):
-        print(f"{i}. {task}")
+    for task in tasks:
+        line_number = task_line_numbers[task]
+        print(f"{line_number}. {task}")
 
 def filter_tasks(tasks: List[str], filter_str: str) -> List[str]:
     """Filtra las tareas según el criterio especificado."""
