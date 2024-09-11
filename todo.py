@@ -107,8 +107,8 @@ def change_priority(task_id: int, new_priority: str):
     else:
         print(f"Invalid task ID: {task_id}")
 
-def sort_file(criterion: str):
-    """Ordena físicamente el archivo todo.txt según el criterio especificado."""
+def sort_file(criteria: str):
+    """Ordena físicamente el archivo todo.txt según los criterios especificados."""
     tasks = read_tasks(TODO_FILE)
     comments = [t for t in tasks if t.startswith(("#", "//"))]
     tasks = [t for t in tasks if not t.startswith(("#", "//"))]
@@ -130,13 +130,20 @@ def sort_file(criterion: str):
         'd': lambda t: ' '.join(t.split()[2:]) if len(t.split()) > 2 else ''
     }
 
-    if criterion in sort_functions:
-        tasks.sort(key=sort_functions[criterion])
+    criteria_list = [c.strip() for c in criteria.split(',')]
+    valid_criteria = [c for c in criteria_list if c in sort_functions]
+
+    if valid_criteria:
+        def multi_key(task):
+            return tuple(sort_functions[c](task) for c in valid_criteria)
+
+        tasks.sort(key=multi_key)
         sorted_tasks = comments + tasks
         write_tasks(TODO_FILE, sorted_tasks)
-        print(f"File sorted by {criterion}")
+        print(f"Archivo ordenado por: {', '.join(valid_criteria)}")
     else:
-        print(f"Invalid sorting criterion: {criterion}")
+        print(f"Criterios de ordenación no válidos: {criteria}")
+        print("Criterios válidos: " + ", ".join(sort_functions.keys()))
 
 def read_tasks(filename: str) -> List[str]:
     """Lee y devuelve las tareas desde un archivo."""
@@ -441,6 +448,9 @@ def show_help(extended: bool = False):
         print("               [context] or [c]")
         print("               [tag] or [t]")
         print("               [description] or [d]")
+        print("      example: ")
+        print("          python todo.py -sf \"p,dd,y\" ") 
+        print("")
         print("  --help, -h                         Show this help")
         print("  --manual, -m                       Show extended help")
 
