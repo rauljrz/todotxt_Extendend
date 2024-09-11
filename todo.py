@@ -348,22 +348,25 @@ def filter_by_status(tasks: List[str], status: str) -> List[str]:
 def sort_tasks(tasks: List[str], order_by: str, reverse: bool) -> List[str]:
     """Ordena las tareas según el criterio especificado."""
     order_key = order_by.lower().rstrip('-')
-    print("por ordenar: ", order_key)
     if order_key in ["p", "priority"]:
         tasks.sort(key=lambda t: re.search(r'\(([A-Z])\)', t).group(1)
                    if re.search(r'\(([A-Z])\)', t) else "Z")
-        print("Ordenado por prioridad.")
+        print("  - Order by Priority.")
     elif order_key in ["y", "project"]:
         tasks.sort(key=lambda t: re.search(r'\+(\w+)', t).group(1)
                    if re.search(r'\+(\w+)', t) else "")
+        print(" - Order by Project.")
     elif order_key in ["c", "context"]:
         tasks.sort(key=lambda t: re.search(r'@(\w+)', t).group(1)
                    if re.search(r'@(\w+)', t) else "")
+        print(" - Order by Context.")
     elif order_key in ["t", "tag"]:
         tasks.sort(key=lambda t: re.search(r'#(\w+)', t).group(1)
                    if re.search(r'#(\w+)', t) else "")
+        print(" - Order by Tag.")
     elif order_key in ["s", "status"]:
         tasks.sort(key=status_key)
+        print(" - Order by Status.")
 
     if order_by.endswith('-') or reverse:
         tasks.reverse()
