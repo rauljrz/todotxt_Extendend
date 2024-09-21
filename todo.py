@@ -65,10 +65,10 @@ def parse_arguments():
     parser.add_argument("--reverse", "-R", action="store_true", help="Reverse sort order")
     parser.add_argument("--help", "-h", action="store_true", help="Show help")
     parser.add_argument("--manual", "-m", action="store_true", help="Show extended help")
-    parser.add_argument("--copy", "-cp", type=int, help="Duplicar una tarea")
+    parser.add_argument("--copy", "-cp", type=int, help="Duplicate a task")
     parser.add_argument("--change-priority", "-ch", nargs=2, metavar=('ID', 'PRIORITY'),
-                        help="Cambiar la prioridad de una tarea")
-    parser.add_argument("--sort-file", "-sf", help="Ordenar físicamente el archivo todo.txt")
+                        help="Change the priority of a task")
+    parser.add_argument("--sort-file", "-sf", help="Physically sort the todo.txt file")
     return parser.parse_args()
 
 def copy_task(task_id: int):
