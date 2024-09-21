@@ -292,16 +292,18 @@ def complete_task(task_id: int):
                     )
                 else:
                     task = task.replace("[=]", "")
-            
-            priority_match = re.search(r'\(([A-Z])\)', task)
-            priority = f"({priority_match.group(1)}) " if priority_match else ""
+
+            # Eliminar marcas de prioridad y estado
+            task = re.sub(r'\([A-Z]\)\s*', '', task)
+            task = task.replace("[?]", "").replace("[=]", "")
+
             creation_date_match = re.search(r'(\d{4}-\d{2}-\d{2})', task)
             creation_date = creation_date_match.group(1) if creation_date_match else ""
-            
-            completed_task = f"x {priority}{today} {creation_date} {task.split(' ', 2)[-1]}"
+
+            completed_task = f"x {today} {creation_date} {task.split(' ', 2)[-1].strip()}"
             done_tasks.append(completed_task)
             tasks.pop(task_id - 1)
-            
+
             write_tasks(TODO_FILE, tasks)
             write_tasks(DONE_FILE, done_tasks)
             print(f"Task {task_id} completed.")
