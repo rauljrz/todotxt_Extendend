@@ -409,7 +409,7 @@ def delete_task(task_id: int):
         if not task.startswith(("#", "//")):
             print(f"You are about to delete the following task:")
             print(f"{task_id}. {task}")
-            confirmacion = input("Are you sure you want to delete this task? (y/m): ").lower()
+            confirmacion = input("Are you sure you want to delete this task? (y/n): ").lower()
             
             if confirmacion == 'y':
                 del tasks[task_id - 1]
